@@ -10,3 +10,5 @@ app.component('test-component', TestComponent)
 
 // monta o Vue dentro da div com id="app"
 app.mount('#app')
+
+//oiiiiiii
