@@ -8,7 +8,7 @@
 </head>
 <body class="bg-emerald-700 flex justify-center justify-items-center">
 <h1 class="text-3xl text-white font-bold">
-    Estou no Index do Site Testando com a Lize
+    Estou no Index do Site Teste novo
 </h1>
 </body>
 </html>
