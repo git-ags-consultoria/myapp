@@ -8,7 +8,7 @@
 </head>
 <body class="bg-emerald-700 flex justify-center justify-items-center">
 <h1 class="text-3xl text-white font-bold">
-    Estou no Index do Site Teste novo
+    Olá pessoal, tudo bem com vocês?
 </h1>
 </body>
 </html>
