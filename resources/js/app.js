@@ -11,10 +11,6 @@ app.component('test-component', TestComponent)
 // monta o Vue dentro da div com id="app"
 app.mount('#app')
 
-
-import './bootstrap';
-import { createApp } from 'vue';
-
 const app = createApp({
     data() {
         return {
