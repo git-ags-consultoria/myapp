@@ -1,8 +1,8 @@
 <div 
     x-data="federationForm({ 
-        name: '{{ old('name', $federation->name ?? '') }}', 
-        acronym: '{{ old('acronym', $federation->acronym ?? '') }}', 
-        website: '{{ old('website', $federation->website ?? '') }}' 
+        name: '{{ addslashes(old('name', $federation->name ?? '')) }}', 
+        acronym: '{{ addslashes(old('acronym', $federation->acronym ?? '')) }}', 
+        website: '{{ addslashes(old('website', $federation->website ?? '')) }}' 
     })"
     x-init="validateAll()"
     class="space-y-4"
@@ -56,38 +56,61 @@
 <script>
 function federationForm(initial) {
     return {
-        fields: { ...initial },
-        errors: {},
+        fields: {
+            name: initial.name ?? '',
+            acronym: initial.acronym ?? '',
+            website: initial.website ?? ''
+        },
+        errors: {
+            name: '',
+            acronym: '',
+            website: ''
+        },
         isValid: false,
 
-        validateField(field) {
+        // Valida apenas um campo (sem chamar validateAll)
+        validateSingle(field) {
+            const value = (this.fields[field] || '').toString().trim();
+            // reset
             this.errors[field] = '';
-            const value = this.fields[field]?.trim();
 
-            switch (field) {
-                case 'name':
-                    if (!value) this.errors.name = 'Name is required.';
-                    else if (value.length < 3) this.errors.name = 'Must be at least 3 characters.';
-                    break;
-                case 'acronym':
-                    if (!value) this.errors.acronym = 'Acronym is required.';
-                    else if (value.length > 10) this.errors.acronym = 'Max 10 characters.';
-                    break;
-                case 'website':
-                    if (value && !/^https?:\/\/[^\s]+$/.test(value))
-                        this.errors.website = 'Enter a valid URL.';
-                    break;
+            if (field === 'name') {
+                if (!value) this.errors.name = 'Name is required.';
+                else if (value.length < 3) this.errors.name = 'Name must be at least 3 characters.';
             }
 
-            this.validateAll();
+            if (field === 'acronym') {
+                if (!value) this.errors.acronym = 'Acronym is required.';
+                else if (value.length > 10) this.errors.acronym = 'Acronym must be at most 10 characters.';
+            }
+
+            if (field === 'website') {
+                if (value && !/^https?:\/\/[^\s]+$/.test(value)) {
+                    this.errors.website = 'Enter a valid URL (starting with http:// or https://).';
+                }
+            }
         },
 
-        validateAll() {
-            // Validate all fields initially
-            Object.keys(this.fields).forEach(f => this.validateField(f));
-            // Check if there are any active errors
-            this.isValid = Object.values(this.errors).every(e => e === '');
+        // Chamada ao digitar para validar um campo e atualizar o estado global
+        validateField(field) {
+            this.validateSingle(field);
+            this.updateValidity();
         },
-    };
+
+        // Valida todos os campos (usado no init)
+        validateAll() {
+            Object.keys(this.fields).forEach(f => this.validateSingle(f));
+            this.updateValidity();
+        },
+
+        // Recalcula se o formulário está válido
+        updateValidity() {
+            // formulário considera válido quando não há mensagens de erro e campos obrigatórios preenchidos
+            const noErrors = Object.values(this.errors).every(e => !e || e === '');
+            const requiredFilled = (this.fields.name || '').toString().trim() !== '' &&
+                                   (this.fields.acronym || '').toString().trim() !== '';
+            this.isValid = noErrors && requiredFilled;
+        }
+    }
 }
 </script>
