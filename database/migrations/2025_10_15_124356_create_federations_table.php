@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('federations', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 200);
-            $table->string('acronym',20)->nullable();
+            $table->string('name', 200)->unique();
+            $table->string('acronym',20)->unique();
             $table->string('website', 200)->nullable();
             $table->timestamps();
         });
