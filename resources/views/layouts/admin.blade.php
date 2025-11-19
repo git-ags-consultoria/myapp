@@ -1,43 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - {{ config('app.name', 'MyApp') }}</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <title>{{ $title ?? 'Painel Administrativo' }}</title>
+    @vite('resources/css/app.css')
 </head>
-<body class="bg-gray-100 text-gray-800 flex h-screen">
-<!-- Sidebar -->
-<aside class="w-64 bg-gray-900 text-gray-100 flex-shrink-0 hidden md:flex flex-col">
-    <div class="p-6 text-2xl font-bold text-blue-400">
-        MyApp Admin
-    </div>
-    <nav class="flex-1 px-4 space-y-2">
-        <a href="{{ route('admin.federations.index') }}"
-           class="block py-2 px-3 rounded hover:bg-gray-800 {{ request()->is('admin/federations*') ? 'bg-gray-800 text-blue-400' : '' }}">
-            🏛 Federations
-        </a>
-    </nav>
-    <div class="p-4 text-sm text-gray-500 border-t border-gray-800">
-        &copy; {{ date('Y') }} MyApp
-    </div>
-</aside>
+<body class="bg-gray-100 text-gray-900">
 
-<!-- Main Content -->
-<div class="flex-1 flex flex-col">
-    <!-- Header -->
-    <header class="bg-white shadow p-4 flex justify-between items-center">
-        <h1 class="text-lg font-semibold text-gray-700">Admin Panel</h1>
-        <div>
-            <span class="text-sm text-gray-500 mr-3">Olá, Admin</span>
-            <button class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm">Logout</button>
-        </div>
-    </header>
+<div class="flex min-h-screen">
+    {{-- Sidebar Component --}}
+    <x-admin.sidebar />
 
-    <!-- Page Content -->
-    <main class="p-6 flex-1 overflow-y-auto">
-        @yield('content')
+    {{-- Main Content --}}
+    <main class="flex-1 p-6">
+        {{-- Header --}}
+        <header class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold text-gray-700">{{ $title ?? 'Dashboard' }}</h1>
+        </header>
+
+        {{-- Flash Messages --}}
+        @if(session('success'))
+            <div class="mb-4 p-4 bg-green-100 text-green-800 rounded">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        {{-- Content --}}
+        <section>
+            @yield('content')
+        </section>
     </main>
 </div>
+
 </body>
 </html>
